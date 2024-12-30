@@ -6,12 +6,20 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import IconButton from "@/components/IconButton";
 import CircleButton from "@/components/CircleButton";
+import EmojiPicker from "@/components/EmojiPicker";
+import { ImageSource } from "expo-image";
+import EmojiList from "@/components/EmojiList";
+import EmojiSticker from "@/components/EmojiSticker";
 
 export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   );
   const [showAppOtions, setShowAppOtions] = useState<boolean>();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(
+    undefined
+  );
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
@@ -29,12 +37,14 @@ export default function Index() {
 
   const onReset = () => {
     setShowAppOtions(false);
-    // setSelectedImage(undefined)
+    setPickedEmoji(undefined);
   };
   const onAddSticker = () => {
-    //TODO
+    setIsModalVisible(true);
   };
-
+  const onModalClose = () => {
+    setIsModalVisible(false);
+  };
   const onSaveImageAsync = () => {
     //TODO
   };
@@ -45,12 +55,15 @@ export default function Index() {
           imgSource={PlaceholderImage}
           selectedImage={selectedImage}
         />
+        {pickedEmoji && (
+          <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />
+        )}
       </View>
       {showAppOtions ? (
         <View style={styles.optionsContainer}>
           <View style={styles.optionsRow}>
             <IconButton icon="refresh" label="Reset" onPress={onReset} />
-            <CircleButton onPress={onSaveImageAsync} />
+            <CircleButton onPress={onAddSticker} />
             <IconButton
               icon="save-alt"
               label="Save"
@@ -68,6 +81,9 @@ export default function Index() {
           <Button label="Use this photo" />
         </View>
       )}
+      <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
+        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
+      </EmojiPicker>
     </View>
   );
 }
