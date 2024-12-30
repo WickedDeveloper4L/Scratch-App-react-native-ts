@@ -4,11 +4,14 @@ import Button from "@/components/Button";
 const PlaceholderImage = require("@/assets/images/background.jpg");
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
+import IconButton from "@/components/IconButton";
+import CircleButton from "@/components/CircleButton";
 
 export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   );
+  const [showAppOtions, setShowAppOtions] = useState<boolean>();
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
@@ -18,9 +21,22 @@ export default function Index() {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
+      setShowAppOtions(true);
     } else {
       alert("You did not select any image");
     }
+  };
+
+  const onReset = () => {
+    setShowAppOtions(false);
+    // setSelectedImage(undefined)
+  };
+  const onAddSticker = () => {
+    //TODO
+  };
+
+  const onSaveImageAsync = () => {
+    //TODO
   };
   return (
     <View style={styles.container}>
@@ -30,14 +46,28 @@ export default function Index() {
           selectedImage={selectedImage}
         />
       </View>
-      <View style={styles.footerContainer}>
-        <Button
-          label="Choose a photo"
-          theme="primary"
-          onPress={pickImageAsync}
-        />
-        <Button label="Use this photo" />
-      </View>
+      {showAppOtions ? (
+        <View style={styles.optionsContainer}>
+          <View style={styles.optionsRow}>
+            <IconButton icon="refresh" label="Reset" onPress={onReset} />
+            <CircleButton onPress={onSaveImageAsync} />
+            <IconButton
+              icon="save-alt"
+              label="Save"
+              onPress={onSaveImageAsync}
+            />
+          </View>
+        </View>
+      ) : (
+        <View style={styles.footerContainer}>
+          <Button
+            label="Choose a photo"
+            theme="primary"
+            onPress={pickImageAsync}
+          />
+          <Button label="Use this photo" />
+        </View>
+      )}
     </View>
   );
 }
@@ -54,5 +84,13 @@ const styles = StyleSheet.create({
   footerContainer: {
     flex: 1 / 3,
     alignItems: "center",
+  },
+  optionsContainer: {
+    position: "absolute",
+    bottom: 80,
+  },
+  optionsRow: {
+    alignItems: "center",
+    flexDirection: "row",
   },
 });
