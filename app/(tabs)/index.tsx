@@ -64,10 +64,10 @@ export default function Index() {
           height: 440,
           quality: 1,
         });
+        dispatch(addImage(localUri));
         await MediaLibrary.saveToLibraryAsync(localUri);
 
         if (localUri) {
-          dispatch(addImage(localUri));
           alert("saved!");
         }
       } catch (e) {
