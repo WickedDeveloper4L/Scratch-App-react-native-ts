@@ -14,6 +14,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from "expo-media-library";
 import { captureRef } from "react-native-view-shot";
 import domtoimage from "dom-to-image";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addImage } from "@/redux/gallery/gallerySlice";
 export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
@@ -27,6 +29,8 @@ export default function Index() {
   if (status === null) {
     requestPermission();
   }
+  const dispatch = useAppDispatch();
+  const images = useAppSelector((state) => state.gallery.images);
   const imageRef = useRef<View>(null);
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -61,7 +65,10 @@ export default function Index() {
           quality: 1,
         });
         await MediaLibrary.saveToLibraryAsync(localUri);
+
         if (localUri) {
+          dispatch(addImage(localUri));
+          console.log(images);
           alert("saved!");
         }
       } catch (e) {
@@ -74,7 +81,8 @@ export default function Index() {
           width: 320,
           height: 440,
         });
-
+        dispatch(addImage(dataUrl));
+        console.log(images);
         let link = document.createElement("a");
         link.download = "sticker-smash.jpeg";
         link.href = dataUrl;
