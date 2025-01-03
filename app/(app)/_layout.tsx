@@ -1,7 +1,14 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/user/user.reducer";
 
 export default function TabLayout() {
+  const user = useAppSelector((state) => selectCurrentUser(state));
+
+  if (!user) {
+    return <Redirect href="/signin" />;
+  }
   return (
     <Tabs
       screenOptions={{

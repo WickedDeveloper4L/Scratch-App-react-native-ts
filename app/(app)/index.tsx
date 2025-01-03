@@ -90,6 +90,7 @@ export default function Index() {
       }
     }
   };
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.imageContainer}>
