@@ -19,7 +19,11 @@ const initialState: AuthProps = {
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setUser: (state) => {
+      state.currentUser = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       signup.fulfilled,
@@ -80,4 +84,5 @@ export const selectCurrentUser = (state: RootState) => state.auth.currentUser;
 export const selectAuthEror = (state: RootState) => state.auth.authError;
 export const selectIsAuthLoading = (state: RootState) =>
   state.auth.isAuthLoading;
+export const { setUser } = authSlice.actions;
 export default authSlice.reducer;
