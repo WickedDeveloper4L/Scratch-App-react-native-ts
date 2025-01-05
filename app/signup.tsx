@@ -3,12 +3,20 @@ import { signup } from "@/redux/user/user.hooks";
 import {
   selectAuthEror,
   selectCurrentUser,
+  selectIsAuthLoading,
   setUser,
 } from "@/redux/user/user.reducer";
 import { Image } from "expo-image";
 import { Link, Redirect } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, View, TextInput, StyleSheet, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
   email: string;
@@ -22,13 +30,16 @@ export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => selectCurrentUser(state));
+  const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
-  console.log(authError);
+  console.log(user);
   useEffect(() => {
-    user && <Redirect href="/(app)" />;
+    if (user) {
+      <Redirect href="/(app)" />;
+    }
   }, [user]);
   return (
     <View style={styles.container}>
@@ -56,11 +67,15 @@ export default function SignUp() {
         textContentType="password"
         onChangeText={(text) => setInfo({ ...info, password: text })}
       />
-      <View style={styles.btnCon}>
-        <Pressable onPress={() => dispatch(signup(info))}>
-          <Text style={styles.btnText}>Create Account</Text>
-        </Pressable>
-      </View>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#ae0563" />
+      ) : (
+        <View style={styles.btnCon}>
+          <Pressable onPress={() => dispatch(signup(info))}>
+            <Text style={styles.btnText}>Create Account</Text>
+          </Pressable>
+        </View>
+      )}
       <Link href="/signin" style={styles.label}>
         have an account? sign in
       </Link>

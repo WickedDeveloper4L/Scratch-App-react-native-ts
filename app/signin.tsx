@@ -3,12 +3,20 @@ import { signInWithEmailAndPasssword } from "@/redux/user/user.hooks";
 import {
   selectAuthEror,
   selectCurrentUser,
+  selectIsAuthLoading,
   setUser,
 } from "@/redux/user/user.reducer";
 import { Image } from "expo-image";
 import { Link, Redirect } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, View, TextInput, StyleSheet, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
   email: string;
@@ -23,10 +31,11 @@ export default function Signin() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => selectCurrentUser(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
+  const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
-  console.log(authError?.message);
+  console.log(authError);
   useEffect(() => {
     user && <Redirect href="/(app)" />;
   }, [user]);
@@ -56,11 +65,17 @@ export default function Signin() {
         textContentType="password"
         onChangeText={(text) => setInfo({ ...info, password: text })}
       />
-      <View style={styles.btnCon}>
-        <Pressable onPress={() => dispatch(signInWithEmailAndPasssword(info))}>
-          <Text style={styles.btnText}>Sign In</Text>
-        </Pressable>
-      </View>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#ae0563" />
+      ) : (
+        <View style={styles.btnCon}>
+          <Pressable
+            onPress={() => dispatch(signInWithEmailAndPasssword(info))}
+          >
+            <Text style={styles.btnText}>Sign In</Text>
+          </Pressable>
+        </View>
+      )}
       <Link href="/signup" style={styles.label}>
         create an account
       </Link>

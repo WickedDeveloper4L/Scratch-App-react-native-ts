@@ -12,7 +12,7 @@ interface AuthProps {
 
 const initialState: AuthProps = {
   currentUser: null,
-  isAuthLoading: true,
+  isAuthLoading: false,
   authError: null,
 };
 
