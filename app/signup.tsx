@@ -37,7 +37,7 @@ export default function SignUp() {
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   const session = useAppSelector((state) => selectAuthSession(state));
-  console.log(session);
+
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }

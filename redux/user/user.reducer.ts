@@ -2,7 +2,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { AuthError, AuthSession, Session, User } from "@supabase/supabase-js";
-import { signInWithEmailAndPasssword, signup } from "./user.hooks";
+import { signInWithEmailAndPasssword, signOut, signup } from "./user.hooks";
 
 interface AuthProps {
   currentUser: User | null;
@@ -84,6 +84,15 @@ export const authSlice = createSlice({
         state.authError = null;
       }
       state.isAuthLoading = false;
+    });
+    builder.addCase(signOut.fulfilled, (state, action) => {
+      if (!action.payload) {
+        state.currentUser = null;
+        state.authSession = null;
+      }
+    });
+    builder.addCase(signOut.rejected, (state, action) => {
+      state.authError = action.payload as AuthError;
     });
   },
 });

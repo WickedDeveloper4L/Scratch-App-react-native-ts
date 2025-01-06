@@ -1,10 +1,26 @@
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { signOut } from "@/redux/user/user.hooks";
+import { selectAuthEror, selectAuthSession } from "@/redux/user/user.reducer";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Settings() {
+  const dispatch = useAppDispatch();
+  const error = useAppSelector((state) => selectAuthEror(state));
+
+  const handleSignOut = () => {
+    dispatch(signOut());
+
+    if (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.btnCon}>
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={handleSignOut}>
           <Text style={styles.btnText}>Sign Out</Text>
         </Pressable>
       </View>

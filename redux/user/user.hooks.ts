@@ -22,3 +22,8 @@ export const signInWithEmailAndPasssword = createAsyncThunk(
     return data;
   }
 );
+
+export const signOut = createAsyncThunk("auth/signout", async () => {
+  const { error } = await supabase.auth.signOut();
+  return error;
+});

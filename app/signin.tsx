@@ -3,7 +3,6 @@ import { signInWithEmailAndPasssword } from "@/redux/user/user.hooks";
 import {
   selectAuthEror,
   selectAuthSession,
-  selectCurrentUser,
   selectIsAuthLoading,
   setUser,
 } from "@/redux/user/user.reducer";
@@ -38,7 +37,6 @@ export default function Signin() {
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
-  console.log(authError);
   const router = useRouter();
   useEffect(() => {
     if (session?.user) {
