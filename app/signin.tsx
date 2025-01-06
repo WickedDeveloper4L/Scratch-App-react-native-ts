@@ -29,11 +29,14 @@ export default function Signin() {
     email: "",
     password: "",
   });
-  const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const session = useAppSelector((state) => selectAuthSession(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
+  console.log(authError);
+  if (authError) {
+    alert(authError.message);
+  }
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
@@ -72,6 +75,7 @@ export default function Signin() {
         textContentType="password"
         onChangeText={(text) => setInfo({ ...info, password: text })}
       />
+
       {isLoading ? (
         <ActivityIndicator size="small" color="#ae0563" />
       ) : (

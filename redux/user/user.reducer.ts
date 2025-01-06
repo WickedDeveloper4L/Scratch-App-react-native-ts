@@ -28,6 +28,12 @@ export const authSlice = createSlice({
     setSession: (state, action: PayloadAction<AuthSession>) => {
       state.authSession = action.payload;
     },
+    setError: (state, action: PayloadAction<AuthError>) => {
+      state.authError = action.payload;
+      state.isAuthLoading = false;
+      state.authSession = null;
+      state.currentUser = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -76,15 +82,7 @@ export const authSlice = createSlice({
     builder.addCase(signInWithEmailAndPasssword.pending, (state) => {
       state.isAuthLoading = true;
     });
-    builder.addCase(signInWithEmailAndPasssword.rejected, (state, action) => {
-      if (action.payload) {
-        state.authError = action.payload as AuthError;
-        state.isAuthLoading = false;
-      } else {
-        state.authError = null;
-      }
-      state.isAuthLoading = false;
-    });
+
     builder.addCase(signOut.fulfilled, (state, action) => {
       if (!action.payload) {
         state.currentUser = null;
@@ -102,5 +100,5 @@ export const selectAuthEror = (state: RootState) => state.auth.authError;
 export const selectAuthSession = (state: RootState) => state.auth.authSession;
 export const selectIsAuthLoading = (state: RootState) =>
   state.auth.isAuthLoading;
-export const { setUser, setSession } = authSlice.actions;
+export const { setUser, setSession, setError } = authSlice.actions;
 export default authSlice.reducer;
