@@ -2,12 +2,14 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { signup } from "@/redux/user/user.hooks";
 import {
   selectAuthEror,
+  selectAuthSession,
   selectCurrentUser,
   selectIsAuthLoading,
+  setSession,
   setUser,
 } from "@/redux/user/user.reducer";
 import { Image } from "expo-image";
-import { Link, Redirect } from "expo-router";
+import { Link, Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Text,
@@ -16,6 +18,8 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
@@ -27,22 +31,31 @@ export default function SignUp() {
     email: "",
     password: "",
   });
-  const [error, setError] = useState<string | null>(null);
+
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => selectCurrentUser(state));
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
+  const session = useAppSelector((state) => selectAuthSession(state));
+  console.log(session);
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
-  console.log(user);
+  const handleSignup = async () => {
+    await dispatch(signup(info));
+  };
+
+  const router = useRouter();
   useEffect(() => {
-    if (user) {
-      <Redirect href="/(app)" />;
+    if (session?.user) {
+      router.replace("/(app)");
     }
-  }, [user]);
+  }, [session]);
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <Image source={logo} style={styles.image} />
       <Text style={styles.title}>Scratch</Text>
       <Text style={styles.small}>start your memories...</Text>
@@ -71,7 +84,7 @@ export default function SignUp() {
         <ActivityIndicator size="small" color="#ae0563" />
       ) : (
         <View style={styles.btnCon}>
-          <Pressable onPress={() => dispatch(signup(info))}>
+          <Pressable onPress={handleSignup}>
             <Text style={styles.btnText}>Create Account</Text>
           </Pressable>
         </View>
@@ -79,7 +92,7 @@ export default function SignUp() {
       <Link href="/signin" style={styles.label}>
         have an account? sign in
       </Link>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

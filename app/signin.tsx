@@ -2,12 +2,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { signInWithEmailAndPasssword } from "@/redux/user/user.hooks";
 import {
   selectAuthEror,
+  selectAuthSession,
   selectCurrentUser,
   selectIsAuthLoading,
   setUser,
 } from "@/redux/user/user.reducer";
 import { Image } from "expo-image";
-import { Link, Redirect } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Text,
@@ -16,6 +17,8 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
@@ -29,18 +32,24 @@ export default function Signin() {
   });
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => selectCurrentUser(state));
+  const session = useAppSelector((state) => selectAuthSession(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
   console.log(authError);
+  const router = useRouter();
   useEffect(() => {
-    user && <Redirect href="/(app)" />;
-  }, [user]);
+    if (session?.user) {
+      router.replace("/(app)");
+    }
+  }, [session]);
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <Image source={logo} style={styles.image} />
       <Text style={styles.title}>Scratch</Text>
       <Text style={styles.small}>continue your memories...</Text>
@@ -79,7 +88,7 @@ export default function Signin() {
       <Link href="/signup" style={styles.label}>
         create an account
       </Link>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

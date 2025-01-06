@@ -1,19 +1,21 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { AuthError, Session, User } from "@supabase/supabase-js";
+import { AuthError, AuthSession, Session, User } from "@supabase/supabase-js";
 import { signInWithEmailAndPasssword, signup } from "./user.hooks";
 
 interface AuthProps {
   currentUser: User | null;
   isAuthLoading: boolean;
   authError: AuthError | null;
+  authSession: AuthSession | null;
 }
 
 const initialState: AuthProps = {
   currentUser: null,
   isAuthLoading: false,
   authError: null,
+  authSession: null,
 };
 
 export const authSlice = createSlice({
@@ -22,6 +24,9 @@ export const authSlice = createSlice({
   reducers: {
     setUser: (state) => {
       state.currentUser = null;
+    },
+    setSession: (state, action: PayloadAction<AuthSession>) => {
+      state.authSession = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -34,11 +39,13 @@ export const authSlice = createSlice({
           | { user: null; session: null }
         >
       ) => {
-        if (action.payload.user) {
+        if (action.payload) {
           state.currentUser = action.payload.user;
+          state.authSession = action.payload.session;
           state.isAuthLoading = false;
         } else {
           state.currentUser = null;
+          state.authSession = null;
         }
         state.isAuthLoading = false;
       }
@@ -82,7 +89,8 @@ export const authSlice = createSlice({
 
 export const selectCurrentUser = (state: RootState) => state.auth.currentUser;
 export const selectAuthEror = (state: RootState) => state.auth.authError;
+export const selectAuthSession = (state: RootState) => state.auth.authSession;
 export const selectIsAuthLoading = (state: RootState) =>
   state.auth.isAuthLoading;
-export const { setUser } = authSlice.actions;
+export const { setUser, setSession } = authSlice.actions;
 export default authSlice.reducer;
