@@ -64,9 +64,10 @@ export const authSlice = createSlice({
       state.isAuthLoading = false;
     });
     builder.addCase(signInWithEmailAndPasssword.fulfilled, (state, action) => {
-      if (action.payload.user) {
+      if (action.payload) {
         state.currentUser = action.payload.user;
         state.isAuthLoading = false;
+        state.authSession = action.payload.session;
       } else {
         state.currentUser = null;
       }
