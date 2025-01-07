@@ -84,7 +84,16 @@ export default function SignUp() {
         <ActivityIndicator size="small" color="#ae0563" />
       ) : (
         <View style={styles.btnCon}>
-          <Pressable onPress={handleSignup}>
+          <Pressable
+            onPress={handleSignup}
+            disabled={info.email.length && info.password.length ? false : true}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? "#e4e4" : "#ae0563",
+              },
+              styles.btnCon,
+            ]}
+          >
             <Text style={styles.btnText}>Create Account</Text>
           </Pressable>
         </View>
@@ -135,7 +144,6 @@ const styles = StyleSheet.create({
     margin: 15,
   },
   btnCon: {
-    backgroundColor: "#ae0563",
     padding: 15,
     width: "50%",
     borderRadius: 7,
