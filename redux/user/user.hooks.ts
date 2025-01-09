@@ -1,7 +1,5 @@
 import { supabase } from "@/utils/supabase";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { useAppDispatch } from "../hooks";
-import { setError } from "./user.reducer";
 
 export const signup = createAsyncThunk(
   "auth/signup",
@@ -22,10 +20,6 @@ export const signInWithEmailAndPasssword = createAsyncThunk(
       password: userData.password,
     });
 
-    if (error) {
-      setError(error);
-      return;
-    }
     return data;
   }
 );

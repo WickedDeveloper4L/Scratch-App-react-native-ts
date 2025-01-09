@@ -21,6 +21,11 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
   email: string;
@@ -41,10 +46,10 @@ export default function SignUp() {
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
+
   const handleSignup = async () => {
     await dispatch(signup(info));
   };
-
   const router = useRouter();
   useEffect(() => {
     if (session?.user) {

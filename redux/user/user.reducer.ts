@@ -27,6 +27,7 @@ export const authSlice = createSlice({
     },
     setSession: (state, action: PayloadAction<AuthSession>) => {
       state.authSession = action.payload;
+      state.isAuthLoading = false;
     },
     setError: (state, action: PayloadAction<AuthError>) => {
       state.authError = action.payload;

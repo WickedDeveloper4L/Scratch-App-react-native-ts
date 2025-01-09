@@ -5,6 +5,7 @@ import {
   selectAuthSession,
   selectIsAuthLoading,
   setUser,
+  setSession,
 } from "@/redux/user/user.reducer";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
@@ -19,6 +20,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
   email: string;
@@ -29,6 +31,7 @@ export default function Signin() {
     email: "",
     password: "",
   });
+
   const dispatch = useAppDispatch();
   const session = useAppSelector((state) => selectAuthSession(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
@@ -40,6 +43,7 @@ export default function Signin() {
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }
+
   const router = useRouter();
   useEffect(() => {
     if (session?.user) {
