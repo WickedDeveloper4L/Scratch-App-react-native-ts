@@ -6,6 +6,8 @@ import {
   selectIsAuthLoading,
   setUser,
   setSession,
+  setError,
+  setIsLoading,
 } from "@/redux/user/user.reducer";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
@@ -20,7 +22,12 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import { supabase } from "@/utils/supabase";
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
   email: string;
@@ -45,6 +52,42 @@ export default function Signin() {
   }
 
   const router = useRouter();
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      if (userInfo.data?.idToken) {
+        dispatch(setIsLoading(true));
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: "google",
+          token: userInfo.data.idToken,
+        });
+        if (data.session) {
+          dispatch(setSession(data.session));
+          dispatch(setIsLoading(false));
+        }
+        if (error) {
+          dispatch(setIsLoading(false));
+          dispatch(setError(error));
+        }
+      } else {
+        throw new Error("no ID token present!");
+      }
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+        alert("Signin cancelled");
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+        alert("Sign-in in progress");
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+        alert("Google play services not available");
+      } else {
+        console.log("Unknown Error occurred", error);
+      }
+    }
+  };
   useEffect(() => {
     if (session?.user) {
       router.replace("/(app)");
@@ -96,6 +139,11 @@ export default function Signin() {
           <Text style={styles.btnText}>Sign In</Text>
         </Pressable>
       )}
+      <GoogleSigninButton
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={signIn}
+      />
       <Link href="/signup" style={styles.label}>
         create an account
       </Link>

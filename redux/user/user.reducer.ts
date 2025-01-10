@@ -35,6 +35,9 @@ export const authSlice = createSlice({
       state.authSession = null;
       state.currentUser = null;
     },
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isAuthLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -101,5 +104,6 @@ export const selectAuthEror = (state: RootState) => state.auth.authError;
 export const selectAuthSession = (state: RootState) => state.auth.authSession;
 export const selectIsAuthLoading = (state: RootState) =>
   state.auth.isAuthLoading;
-export const { setUser, setSession, setError } = authSlice.actions;
+export const { setUser, setSession, setError, setIsLoading } =
+  authSlice.actions;
 export default authSlice.reducer;

@@ -5,6 +5,8 @@ import {
   selectAuthSession,
   selectCurrentUser,
   selectIsAuthLoading,
+  setError,
+  setIsLoading,
   setSession,
   setUser,
 } from "@/redux/user/user.reducer";
@@ -26,6 +28,7 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { supabase } from "@/utils/supabase";
 const logo = require("@/assets/images/icon.png");
 interface InfoProps {
   email: string;
@@ -49,6 +52,42 @@ export default function SignUp() {
 
   const handleSignup = async () => {
     await dispatch(signup(info));
+  };
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      if (userInfo.data?.idToken) {
+        dispatch(setIsLoading(true));
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: "google",
+          token: userInfo.data.idToken,
+        });
+        if (data.session) {
+          dispatch(setSession(data.session));
+          dispatch(setIsLoading(false));
+        }
+        if (error) {
+          dispatch(setIsLoading(false));
+          dispatch(setError(error));
+        }
+      } else {
+        throw new Error("no ID token present!");
+      }
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+        alert("Signin cancelled");
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+        alert("Sign-in in progress");
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+        alert("Google play services not available");
+      } else {
+        console.log("Unknown Error occurred", error);
+      }
+    }
   };
   const router = useRouter();
   useEffect(() => {
@@ -103,6 +142,12 @@ export default function SignUp() {
           </Pressable>
         </View>
       )}
+      <Text style={styles.alt}>Or</Text>
+      <GoogleSigninButton
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={signIn}
+      />
       <Link href="/signin" style={styles.label}>
         have an account? sign in
       </Link>
@@ -133,6 +178,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontStyle: "italic",
   },
+  alt: {
+    fontSize: 14,
+    margin: 5,
+    color: "#fff",
+  },
   label: {
     fontSize: 16,
     color: "#fff",
@@ -150,7 +200,7 @@ const styles = StyleSheet.create({
   },
   btnCon: {
     padding: 15,
-    width: "50%",
+    // width: "50%",
     borderRadius: 7,
     alignItems: "center",
   },
