@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { signOut } from "@/redux/user/user.hooks";
 import { selectAuthEror, selectAuthSession } from "@/redux/user/user.reducer";
+import { supabase } from "@/utils/supabase";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -8,7 +9,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 export default function Settings() {
   const dispatch = useAppDispatch();
   const error = useAppSelector((state) => selectAuthEror(state));
-
+  const authSession = useAppSelector((state) => selectAuthSession(state));
   const handleSignOut = () => {
     dispatch(signOut());
 
@@ -17,6 +18,20 @@ export default function Settings() {
     }
   };
 
+  const getUser = async () => {
+    console.log(authSession?.user.id);
+    const { data, error } = await supabase
+      .from("profiles")
+      .select()
+      .eq("id", authSession?.user?.id)
+      .single();
+
+    console.log(error);
+    console.log(data);
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.btnCon}>

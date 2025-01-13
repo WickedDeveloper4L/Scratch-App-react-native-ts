@@ -43,7 +43,7 @@ export default function Signin() {
   const session = useAppSelector((state) => selectAuthSession(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
-  console.log(authError);
+  // console.log(authError);
   if (authError) {
     alert(authError.message);
   }

@@ -91,7 +91,7 @@ export default function SignUp() {
   const router = useRouter();
   useEffect(() => {
     if (session?.user) {
-      router.replace("/(app)");
+      router.replace("/profile");
     }
   }, [session]);
   return (
