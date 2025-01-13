@@ -7,7 +7,16 @@ export const signup = createAsyncThunk(
     const { data, error } = await supabase.auth.signUp({
       email: authData.email,
       password: authData.password,
+      options: {
+        data: {
+          email: authData.email,
+          name: "Kleine",
+          country: "Nigeria",
+          gender: "male",
+        },
+      },
     });
+
     return data;
   }
 );

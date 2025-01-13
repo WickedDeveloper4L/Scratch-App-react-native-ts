@@ -8,12 +8,10 @@ import { supabase } from "@/utils/supabase";
 export default function TabLayout() {
   const session = useAppSelector((state) => selectAuthSession(state));
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) dispatch(setSession(session));
     });
-
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) dispatch(setSession(session));
     });

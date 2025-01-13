@@ -41,7 +41,6 @@ export default function SignUp() {
   });
 
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => selectCurrentUser(state));
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   const session = useAppSelector((state) => selectAuthSession(state));
