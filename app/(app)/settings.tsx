@@ -1,13 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { signOut } from "@/redux/user/user.hooks";
-import {
-  selectAuthEror,
-  selectAuthSession,
-  selectCurrentUser,
-} from "@/redux/user/user.reducer";
-import { supabase } from "@/utils/supabase";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { selectAuthEror, selectCurrentUser } from "@/redux/user/user.reducer";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Settings() {

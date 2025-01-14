@@ -100,7 +100,7 @@ export default function Signin() {
     >
       <Image source={logo} style={styles.image} />
       <Text style={styles.title}>Scratch</Text>
-      <Text style={styles.small}>continue your memories...</Text>
+      <Text style={styles.small}>Login to continue.</Text>
       <TextInput
         placeholder="email"
         value={info.email}
@@ -163,21 +163,21 @@ const styles = StyleSheet.create({
     height: 100,
   },
   title: {
-    fontSize: 35,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#ae0563",
-    marginTop: 20,
+    marginTop: 5,
   },
   small: {
     fontSize: 17,
     margin: 10,
     color: "#fff",
-    fontStyle: "italic",
   },
   label: {
     fontSize: 16,
     color: "#fff",
     margin: 10,
+    textDecorationLine: "underline",
   },
   input: {
     backgroundColor: "#fff",
@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
     width: "50%",
     borderRadius: 7,
     alignItems: "center",
+    margin: 30,
   },
   btnText: {
     fontSize: 15,

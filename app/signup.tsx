@@ -101,7 +101,7 @@ export default function SignUp() {
     >
       <Image source={logo} style={styles.image} />
       <Text style={styles.title}>Scratch</Text>
-      <Text style={styles.small}>start your memories...</Text>
+      <Text style={styles.small}>Create a new account</Text>
       <TextInput
         placeholder="email"
         value={info.email}
@@ -166,16 +166,15 @@ const styles = StyleSheet.create({
     height: 100,
   },
   title: {
-    fontSize: 35,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#ae0563",
-    marginTop: 20,
+    marginTop: 5,
   },
   small: {
     fontSize: 17,
     margin: 10,
     color: "#fff",
-    fontStyle: "italic",
   },
   alt: {
     fontSize: 14,
@@ -186,6 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff",
     margin: 10,
+    textDecorationLine: "underline",
   },
   input: {
     backgroundColor: "#fff",
