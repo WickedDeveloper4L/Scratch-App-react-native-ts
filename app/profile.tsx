@@ -50,7 +50,7 @@ export default function Profile() {
       alert("Unable to update your profile at this time.");
     }
     setIsLoading(false);
-    router.replace("/(app)");
+    if (!error) router.replace("/(app)");
   };
   return (
     <View style={styles.container}>

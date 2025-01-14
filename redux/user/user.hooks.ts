@@ -10,9 +10,6 @@ export const signup = createAsyncThunk(
       options: {
         data: {
           email: authData.email,
-          name: "Kleine",
-          country: "Nigeria",
-          gender: "male",
         },
       },
     });

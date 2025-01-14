@@ -5,7 +5,7 @@ import { AuthError, AuthSession, Session, User } from "@supabase/supabase-js";
 import { signInWithEmailAndPasssword, signOut, signup } from "./user.hooks";
 
 interface AuthProps {
-  currentUser: User | null;
+  currentUser: User | any;
   isAuthLoading: boolean;
   authError: AuthError | null;
   authSession: AuthSession | null;
@@ -24,6 +24,9 @@ export const authSlice = createSlice({
   reducers: {
     setUser: (state) => {
       state.currentUser = null;
+    },
+    setUserInfo: (state, action) => {
+      state.currentUser = action.payload;
     },
     setSession: (state, action: PayloadAction<AuthSession>) => {
       state.authSession = action.payload;
@@ -104,6 +107,6 @@ export const selectAuthEror = (state: RootState) => state.auth.authError;
 export const selectAuthSession = (state: RootState) => state.auth.authSession;
 export const selectIsAuthLoading = (state: RootState) =>
   state.auth.isAuthLoading;
-export const { setUser, setSession, setError, setIsLoading } =
+export const { setUser, setSession, setError, setIsLoading, setUserInfo } =
   authSlice.actions;
 export default authSlice.reducer;

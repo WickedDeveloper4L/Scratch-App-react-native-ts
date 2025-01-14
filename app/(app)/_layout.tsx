@@ -1,13 +1,31 @@
 import { Redirect, Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { selectAuthSession, setSession } from "@/redux/user/user.reducer";
+import {
+  selectAuthSession,
+  selectCurrentUser,
+  setSession,
+  setUserInfo,
+} from "@/redux/user/user.reducer";
 import { useEffect } from "react";
 import { supabase } from "@/utils/supabase";
 
 export default function TabLayout() {
   const session = useAppSelector((state) => selectAuthSession(state));
+  const user = useAppSelector((state) => selectCurrentUser(state));
   const dispatch = useAppDispatch();
+  const getUser = async () => {
+    if (!user) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select()
+        .eq("id", session?.user?.id)
+        .single();
+      console.log("fired");
+
+      if (!error) dispatch(setUserInfo(data));
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -16,6 +34,7 @@ export default function TabLayout() {
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) dispatch(setSession(session));
     });
+    getUser();
   }, []);
   if (!session) {
     return <Redirect href="/signin" />;
