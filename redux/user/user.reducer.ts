@@ -7,7 +7,7 @@ import { signInWithEmailAndPasssword, signOut, signup } from "./user.hooks";
 interface AuthProps {
   currentUser: User | any;
   isAuthLoading: boolean;
-  authError: AuthError | null;
+  authError: AuthError | null | any;
   authSession: AuthSession | null;
 }
 
@@ -38,6 +38,9 @@ export const authSlice = createSlice({
       state.authSession = null;
       state.currentUser = null;
     },
+    clearError: (state) => {
+      state.authError = null;
+    },
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isAuthLoading = action.payload;
     },
@@ -52,14 +55,8 @@ export const authSlice = createSlice({
           | { user: null; session: null }
         >
       ) => {
-        if (action.payload) {
-          state.currentUser = action.payload.user;
-          state.authSession = action.payload.session;
-          state.isAuthLoading = false;
-        } else {
-          state.currentUser = null;
-          state.authSession = null;
-        }
+        state.currentUser = action.payload.user;
+        state.authSession = action.payload.session;
         state.isAuthLoading = false;
       }
     );
@@ -67,29 +64,22 @@ export const authSlice = createSlice({
       state.isAuthLoading = true;
     });
     builder.addCase(signup.rejected, (state, action) => {
-      if (action.payload) {
-        state.authError = action.payload as AuthError;
-        state.isAuthLoading = false;
-      } else {
-        state.authError = null;
-      }
-
+      state.authError = action.payload as AuthError;
+      state.isAuthLoading = false;
       state.isAuthLoading = false;
     });
     builder.addCase(signInWithEmailAndPasssword.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.currentUser = action.payload.user;
-        state.isAuthLoading = false;
-        state.authSession = action.payload.session;
-      } else {
-        state.currentUser = null;
-      }
+      state.currentUser = action.payload.user;
       state.isAuthLoading = false;
+      state.authSession = action.payload.session;
     });
     builder.addCase(signInWithEmailAndPasssword.pending, (state) => {
       state.isAuthLoading = true;
     });
-
+    builder.addCase(signInWithEmailAndPasssword.rejected, (state, action) => {
+      state.isAuthLoading = false;
+      state.authError = action.payload as AuthError;
+    });
     builder.addCase(signOut.fulfilled, (state, action) => {
       if (!action.payload) {
         state.currentUser = null;
@@ -107,6 +97,12 @@ export const selectAuthEror = (state: RootState) => state.auth.authError;
 export const selectAuthSession = (state: RootState) => state.auth.authSession;
 export const selectIsAuthLoading = (state: RootState) =>
   state.auth.isAuthLoading;
-export const { setUser, setSession, setError, setIsLoading, setUserInfo } =
-  authSlice.actions;
+export const {
+  setUser,
+  setSession,
+  setError,
+  setIsLoading,
+  setUserInfo,
+  clearError,
+} = authSlice.actions;
 export default authSlice.reducer;

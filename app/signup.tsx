@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { signup } from "@/redux/user/user.hooks";
 import {
+  clearError,
   selectAuthEror,
   selectAuthSession,
   selectCurrentUser,
@@ -44,7 +45,10 @@ export default function SignUp() {
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   const session = useAppSelector((state) => selectAuthSession(state));
-
+  if (authError) {
+    alert(authError.message);
+    dispatch(clearError());
+  }
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
   }

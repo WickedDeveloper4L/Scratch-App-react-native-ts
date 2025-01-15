@@ -8,6 +8,7 @@ import {
   setSession,
   setError,
   setIsLoading,
+  clearError,
 } from "@/redux/user/user.reducer";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
@@ -43,9 +44,9 @@ export default function Signin() {
   const session = useAppSelector((state) => selectAuthSession(state));
   const authError = useAppSelector((state) => selectAuthEror(state));
   const isLoading = useAppSelector((state) => selectIsAuthLoading(state));
-  // console.log(authError);
   if (authError) {
     alert(authError.message);
+    dispatch(clearError());
   }
   if (authError?.code === "user_already_exists") {
     dispatch(setUser());
@@ -89,6 +90,7 @@ export default function Signin() {
     }
   };
   useEffect(() => {
+    dispatch(clearError());
     if (session?.user) {
       router.replace("/(app)");
     }

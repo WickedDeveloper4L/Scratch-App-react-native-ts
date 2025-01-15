@@ -3,7 +3,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   selectAuthSession,
-  selectCurrentUser,
   setSession,
   setUserInfo,
 } from "@/redux/user/user.reducer";
@@ -12,10 +11,9 @@ import { supabase } from "@/utils/supabase";
 
 export default function TabLayout() {
   const session = useAppSelector((state) => selectAuthSession(state));
-  const user = useAppSelector((state) => selectCurrentUser(state));
   const dispatch = useAppDispatch();
   const getUser = async () => {
-    if (!user) {
+    if (session) {
       const { data, error } = await supabase
         .from("profiles")
         .select()
